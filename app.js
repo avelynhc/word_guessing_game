@@ -1,63 +1,67 @@
-const secretWord = ["donut","hospital","humidifier","dinner","puppy","vitamin"]
+let displayedWord = "humidifier"
 let pos = 0
-let displayedWord = ""
 let correctAnswer = 0
 let remainingNum = 7
 
-const getNextWord = () => {
-    const taken = document.querySelectorAll(".selected")
-    for(let i =0;i<taken.length;i++){
-        taken[i].classList.remove("selected")
-        taken[i].disabled = false
+const startButtonPressed = () => {
+    console.log("Resetting a game!")
+    const buttonArray = document.querySelectorAll(".btn-letter")
+    for(let i = 0;i < buttonArray.length; i++){
+        buttonArray[i].disabled = false
+        buttonArray[i].classList.remove("selected")
     }
-    displayedWord = secretWord[pos]
-    let wordHTML = ""
-    for(let i = 0;i<displayedWord.length;i++){
-        wordHTML += `<span>${displayedWord[i]}</span>`
-    }
-    console.log(wordHTML)
+    remainingNum = 7
     let wordText = ""
-    for(let i = 0;i<displayedWord.length;i++){
+    for(let i = 0;i < displayedWord.length;i++){
         wordText += `<span> __ </span>` 
     }
-    document.querySelector("h2").innerHTML = `<h3>What is the secret word?</h3>`
-    document.querySelector("h2").innerHTML += `\n${wordText}`
-    document.querySelectorAll("h2")[1].innerHTML = `<h3>Changes remaining: ${remainingNum}</h3>`
-}
-
-const startButtonPressed = (e) => {
-    console.log("Resetting a game!")
-    remainingNum = 7
-    correctAnswer = 0
-    pos = 0
-    getNextWord()
+    document.querySelector("h2").innerHTML = `<h3>What is the secret word?</h3>
+                                                <h3>${wordText}</h3>`
+    document.querySelectorAll("h2")[1].innerHTML = `<h2>Changes remaining: ${remainingNum}</h2>`
+    document.querySelector("p").innerText = ""
 }
 const letterButtonPressed = (evt) => {
 let correctCharPos = -1
     console.log("letter button pressed!")
-    if(remainingNum>0){
+    document.querySelector("#lbl-results").innerHTML = ""
+    if(remainingNum > 0){
         if(evt.target.classList.contains("btn-letter") === true){
             console.log("Person clicked alphabet button")
+            console.log(`event.target = ${evt.target}`)
             evt.target.classList.add("selected")
             evt.target.disabled = true
-            for(let i =0;i<displayedWord.length;i++){
+            let flag = false
+            for(let i = 0;i < displayedWord.length;i++){
                 if(displayedWord[i] === evt.target.innerText.toLowerCase()){
-                    console.log("Choose correct letter")
+                    console.log("Correct letter")
                     correctAnswer++
                     correctCharPos = i 
                     // console.log(`Correct letter position: ${correctCharPos}`)
-                    document.querySelectorAll("span")[correctCharPos].innerText = evt.target.innerText
+                    console.log(`Person clicked ${evt.target.innerText}`)
+                    document.querySelectorAll("span")[correctCharPos].innerText = `${evt.target.innerText} `
+                    console.log(`Correct answer: ${correctAnswer}`)
+                    console.log(`displayedWord length: ${displayedWord.length}`)
                     if(correctAnswer === displayedWord.length){
-                        alert("You Win!")
-                        pos++
-                        getNextWord()
+                        setTimeout(() => {
+                            alert("You Win!")
+                        }, 100)
+                        const buttonArray = document.querySelectorAll(".btn-letter")
+                        for(let i = 0;i < buttonArray.length; i++){
+                            buttonArray[i].disabled = true
+                            buttonArray[i].classList.add("selected")
+                        }
+                        // pos++
+                        // correctAnswer = 0
                     }
-                    return
+                    flag = true
                 }
             }
-            remainingNum--
-            document.querySelectorAll("h2")[1].innerHTML = `<h3>Changes remaining: ${remainingNum}</h3>`
-            alert("You chose wrong letter")
+            if(flag === false){
+                remainingNum--
+                document.querySelectorAll("h2")[1].innerHTML = `<h2>Changes remaining: ${remainingNum}</h2>`
+                console.log("Wrong letter")
+                document.querySelector("#lbl-results").innerHTML = `<p>Sorry, this letter is not in the word.</p>`
+            }
         }
         else{
             console.log("Person clicked on something else!")
@@ -65,12 +69,28 @@ let correctCharPos = -1
         }
     }
     else{
-        alert("You Lose!")
+        setTimeout(() => {
+            alert("You Lose!")
+        }, 100)
+        const buttonArray = document.querySelectorAll(".btn-letter")
+        for(let i = 0;i < buttonArray.length; i++){
+            buttonArray[i].disabled = true
+            buttonArray[i].classList.add("selected")
+        }
         return
     }
 }
 const pageLoaded = () => {
-    getNextWord()
+    let wordHTML = ""
+    for(let i = 0;i < displayedWord.length;i++){
+        wordHTML += `<span>${displayedWord[i]}</span>`
+    }
+    console.log(wordHTML)
+    let wordText = ""
+    for(let i = 0;i < displayedWord.length;i++){
+        wordText += `<span> __ </span>` 
+    }
+    document.querySelector("h2").innerHTML += `<h3>${wordText}</h3>`
 }
 document.querySelector("button").addEventListener("click",startButtonPressed)
 document.querySelector("#letters").addEventListener("click",letterButtonPressed)

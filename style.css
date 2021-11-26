@@ -1,0 +1,28 @@
+button.selected {
+    background-color: #626262;
+}
+body {
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+#letters {
+    place-content: center;
+    display: grid;
+    grid-template-columns: repeat(7,40px);
+    column-gap: 10px;
+    row-gap: 10px;
+}
+.btn-letter {
+    width: 30px;
+    height: 40px;
+    background-color: #FFED83;
+    border: 0px solid #FFED83;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.btn-letter:hover {
+    transform: scale(1.2);
+}
+h2 {
+    font-size: 25px;
+}
